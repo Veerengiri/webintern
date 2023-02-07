@@ -2,9 +2,38 @@ const express = require('express');
 const user = require('../model/user');
 const item = require('../model/item');
 const order = require('../model/order');
-
+const custome = require('../model/custome');
 const router = express.Router();
+   
 
+
+router.post('/api/corder',async (req,res)=>{
+    try {
+        const { userId,type,sauce,cheese,veg,date,time,price,qtn }=req.body;
+        const dt = await custome.create({
+            userId,
+            type,
+            sauce,
+            cheese,
+            veg,
+            date,
+            time,
+            qtn,
+            price,
+            totalprice: price*qtn,
+            isDeliverd: false,
+            sorttime: Date.now().toString(),
+            cancel: false
+        })
+        if(dt){
+            res.json({status:"ok"});
+        }else{
+            res.json({status:'server error'});
+        }
+    } catch (error) {
+        res.json({status:"error"});
+    }
+})
 router.post('/api/getorder',async (req,res)=>{
     const {userId,itemId,qtn}=req.body;
     const isDeliverd = false;
@@ -38,7 +67,7 @@ router.post('/api/getorder',async (req,res)=>{
 })
 router.get('/api/showalloreders',async (req,res)=>{
     try {
-        const orders =await order.find();
+        const orders =await order.find().sort({sorttime:-1});
         let showorders=[];
         for(let i =0;i<orders.length;i++){
             let users =await user.findById(orders[i].userId);
@@ -96,7 +125,6 @@ router.get('/api/searchorders/:keyword',async (req,res)=>{
         res.json({status:"error"});
     }
 })
-
 router.get('/api/orderundeliverd',async (req,res)=>{
     try {
         const orders =await order.find({isDeliverd:"false"});
@@ -172,7 +200,8 @@ router.get('/api/showorders/:userId',async (req,res)=>{
                 totalprice: orders[i].totalprice,
                 time: orders[i].time,
                 date: orders[i].date,
-                deliverd: orders[i].isDeliverd?"Deliverd":"unDeliverd"
+                deliverd: orders[i].isDeliverd?"Deliverd":"unDeliverd",
+                cancel: orders[i].cancel
             }
             showorders.push(add);
         }
@@ -183,7 +212,7 @@ router.get('/api/showorders/:userId',async (req,res)=>{
 })
 router.get('/api/deleteorder/:orderid',async(req,res)=>{
     try {
-        await order.findByIdAndDelete(req.params['orderid'])
+        await order.findByIdAndUpdate(req.params['orderid'],{cancel:true})
         res.json({status:"order delete successfully"})
     } catch (error) {
         res.json({status:"error"})
@@ -192,11 +221,17 @@ router.get('/api/deleteorder/:orderid',async(req,res)=>{
 router.get('/api/deliverdtrue/:orderid',async(req,res)=>{
     const {orderid}=req.params;
     try {
-        await order.findByIdAndUpdate(orderid,{isDeliverd:true});
+        const dt = await order.findById(orderid);
+        if(dt.isDeliverd){
+            await order.findByIdAndUpdate(orderid,{isDeliverd:false});
+        }else{
+            await order.findByIdAndUpdate(orderid,{isDeliverd:true});
+        }
         res.json({status:"ok"});
     } catch (error) {
         res.json({status:"error"});
     }
 })
+
 
 module.exports=router

@@ -1,12 +1,24 @@
 const mongoose = require('mongoose');
 
-const orderSchema = mongoose.Schema({
+const custome = mongoose.Schema({
     userId:{
         type: String,
         required: true
     },
-    itemId: {
-        type: String,
+    type:{
+        type:String,
+        required: true
+    },
+    sauce:{
+        type:String,
+        required: true
+    },
+    cheese: {
+        type:String,
+        required: true,
+    },
+    veg:{
+        type: Array,
         required: true
     },
     date: {
@@ -16,11 +28,6 @@ const orderSchema = mongoose.Schema({
     time:{
         type: String,
         required: true
-    },
-    
-    itemname:{
-        type: String,
-        require: true
     },
     price: {
         type: Number,
@@ -47,4 +54,4 @@ const orderSchema = mongoose.Schema({
     }
     
 })
-module.exports = mongoose.model('order',orderSchema);
+module.exports = mongoose.model('custome',custome);

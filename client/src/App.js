@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-
-import logo from './logo.svg';
 import './App.css';
 import Register from './usercomp/Register';
 import Login from './usercomp/Login';
@@ -19,11 +17,20 @@ import Nas from './generalcomp/Nas';
 import Navbar from "./generalcomp/Navbar";
 import Footer from "./generalcomp/Footer";
 import Home from "./generalcomp/Home";
+import { createContext, useEffect, useState } from "react";
+import Custom from "./usercomp/Custom";
+import LoadingBar from 'react-top-loading-bar'
+import logo from './logo.svg';
+import Corder from "./admincomp/Corder";
+import Coinfo from "./admincomp/Coinfo";
+import UCorder from "./usercomp/Corder";
+import UCoinfo from "./usercomp/Coinfo";
+// import "dotenv";
 
-import { useEffect, useState } from "react";
 
-
+const MyContext = createContext();
 function App() {
+  const backend = "https://pizzasite-beige.vercel.app";
   const [customerid,setCustomerid]=useState("");
   const [customeremail,setCustomeremail]=useState("");
   const [adminid,setAdminid]=useState("");
@@ -31,6 +38,8 @@ function App() {
   const [isadmin,setIsadmin]=useState(false);
   const mae = "virengirigoswami3@gmail.com";
   const [ismainadmin,setIsmainadmin]=useState(false);
+  const [progress,setProgress]=useState(0);
+  const [cus,setCus]=useState("-");
   
   const logout=()=>{
     setCustomerid("");
@@ -39,8 +48,7 @@ function App() {
     setIsadmin(false);
     setIscustomer(false);
     setIsmainadmin(false);
-    window.localStorage.removeItem('emailforuser');
-    window.localStorage.removeItem('customerid');
+    window.localStorage.clear();
   }
   const logouta=()=>{
     setCustomerid("");
@@ -49,46 +57,46 @@ function App() {
     setIsadmin(false);
     setIscustomer(false);
     setIsmainadmin(false);
-    window.localStorage.removeItem('adminid');
-    window.localStorage.removeItem('emailforadmin');
+    window.localStorage.clear();
   }
-  useEffect(()=>{
-    // setCustomerid("");
-    // setAdminid("");
-    // setCustomeremail("");
-    // setIsadmin(false); 
-    // setIscustomer(false);
-    // setIsmainadmin(false);
-    const a = window.localStorage.getItem('emailforuser');
-    const b = window.localStorage.getItem('customerid');
-    const c = window.localStorage.getItem('adminid');
-    const d = window.localStorage.getItem('emailforadmin');
-    if(a && b && c && d){
-      if(d==mae){
-        setIsmainadmin(true);
+  const check = async ()=>{
+    const token = window.localStorage.getItem('token');
+    if(token){
+      const res = await fetch(`${backend}/api/check/${token}`,{
+        method:'GET',
+      })
+      const data= await res.json();
+      if(data.status=="ok"){
+        if(data.isadmin==true){
+          if(data.email==mae){
+            setIsmainadmin(true);
+          }
+          setAdminid(data.id);
+          setIsadmin(true);
+        }else{
+          setCustomeremail(data.email);
+          setCustomerid(data.id);
+          setIscustomer(true);
+        }
       }
-      setAdminid(c);
-      setIsadmin(true);
-      return;
+    }else{
+      logout();
     }
-    if(a && b){
-      setCustomeremail(a);
-      setCustomerid(b);
-      setIscustomer(true);
-      return;
-    }
-    if(c && d){
-      if(d==mae){
-        setIsmainadmin(true);
-      }
-      setAdminid(c);
-      setIsadmin(true);
-      return;
-    }
+  }
+  useEffect( ()=>{
+    check();
+    setProgress(100)
   },[])
   return (
-    <>
+    <MyContext.Provider value={{setProgress,iscustomer,customerid,isadmin, backend}}>
       <BrowserRouter>
+        <LoadingBar
+          color='gold'
+          onLoaderFinished={()=>setProgress(0)}
+          progress={progress}
+          height={3}
+          // setTime="400"
+        />
         <Navbar  iscustomer={iscustomer} isadmin={isadmin} ismainadmin={ismainadmin} logout={logout} logouta={logouta}/>
         <Routes>
           <Route path="/" element={
@@ -96,7 +104,6 @@ function App() {
               <Home />
               <Item isadmin={isadmin} iscustomer={iscustomer} ci={customerid} customeremail={customeremail}/>
               <Nas isadmin={isadmin}  iscustomer={iscustomer} />
-              
             </>
           } />
           <Route path="/profile" element={<Profile ci={customerid} ic={iscustomer}/>} />
@@ -107,18 +114,25 @@ function App() {
           <Route path="/customers" element={<Customers isadmin={isadmin}/>} />
           <Route path="/additem" element={<AddItem isadmin={isadmin}/>} />
           <Route path="/aprofile" element={<AProfile ai={adminid} isadmin={isadmin}/>} />
-          <Route path="/items" element={<Item isadmin={isadmin} iscustomer={iscustomer}/>} />
+          <Route path="/items" element={<Item  isadmin={isadmin} iscustomer={iscustomer}/>} />
           <Route path="/login" element={<Login setCustomerid={setCustomerid} setIscustomer={setIscustomer} setCustomeremail={setCustomeremail}/>} />
           <Route path="/register" element={<Register />} />
           <Route path="/alogin" element={<ALogin sai={setAdminid} isadmin={setIsadmin} mae={mae} ismainadmin={setIsmainadmin}/>} />
           <Route path="/aregister" element={<ARegister isadmin={ismainadmin}/>} />
           <Route path="/admins" element={<Admins isadmin={ismainadmin}/>} />
+          <Route path="/custome" element={<Custom/>} />
+          <Route path="/corder" element={<Corder isadmin={isadmin} setCus={setCus}/>}/>
+          <Route path="/coinfo" element={<Coinfo isadmin={isadmin} cus={cus}/>}/>
+          <Route path="/custome" element={<Custom/>} />
+          <Route path="/usercorder" element={<UCorder iscustomer={iscustomer} uid={customerid} setCus={setCus}/>}/>
+          <Route path="/usercoinfo" element={<UCoinfo iscustomer={iscustomer}  cus={cus}/>}/>
 
         </Routes>
         <Footer />
       </BrowserRouter>
-    </>
+    </MyContext.Provider>
   );
 }
 
 export default App;
+export {MyContext};

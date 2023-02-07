@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../App';
 import Loading from '../generalcomp/Loading';
 
 function Customers(props) {
     const { isadmin } = props;
+    const {backend}=useContext(MyContext);
     const nav = useNavigate()
     const [search, setSearch] = useState("");
     const [costomers, setCustomers] = useState([]);
     const getuser = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:7000/api/getalluser', {
+        const response = await fetch(`${backend}/api/getalluser`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -21,7 +23,7 @@ function Customers(props) {
     }
     const searchuser = async (e) => {
         e.preventDefault();
-        const response = await fetch(`http://localhost:7000/api/searchuser/${search}`, {
+        const response = await fetch(`${backend}/api/searchuser/${search}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"

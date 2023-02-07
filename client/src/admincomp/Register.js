@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../App';
 let chakar = Math.round(1000000 * Math.random()).toString();
 function Register(props) {
     const { isadmin } = props
+    const {backend}=useContext(MyContext);
     const nav = useNavigate();
     const [name, setName] = useState("");
     const [mobileNo, setMobileNo] = useState("");
@@ -44,7 +46,7 @@ function Register(props) {
             return;
         }
         try {
-            const response = await fetch('http://localhost:7000/api/addmalik', {
+            const response = await fetch(`${backend}/api/addmalik`, {
                 method: "POST",
                 headers: {
                     "content-type": "application/json"

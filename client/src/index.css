@@ -1,3 +1,4 @@
+
 .admin{
     display: none;
 }
@@ -6,18 +7,19 @@ body{
     padding: 0;
     color: white;
     background-color: black;
+    overflow-x: hidden;
     /* height: 200vh; */
 }
-body::-webkit-scrollbar{
-    width: 5px;
+::-webkit-scrollbar{
+    width: 4px;
 }
-body::-webkit-scrollbar-track{
+::-webkit-scrollbar-track{
     background-color: transparent;
 }
-body::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb{
     background-color: rgb(255, 225, 0);
 }
-body::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: yellow;
 }
 .navbarmain{
@@ -119,6 +121,7 @@ body::-webkit-scrollbar-thumb:hover {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
+    margin-top: 50px;
 }
 .hleft p{
     text-align: end;
@@ -126,14 +129,21 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .hright {
     /* height: 80vh; */
-    background: url(https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YnVyZ2VyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60);
+    background:url(https://img.freepik.com/free-vector/realistic-pizza-ads-banner_52683-70644.jpg?w=1060&t=st=1675677779~exp=1675678379~hmac=867443f1c262cd8f8c467dbffe0935cb45ce8b8f6546cf5dda396070bfb71ea8);
+    /* background: url(https://img.freepik.com/premium-photo/classic-pizza-dark-wooden-table-surface-scattering-flour-pizza-restaurant-menu-concept_152625-1030.jpg?w=900); */
     background-repeat: no-repeat;
     background-position: center;
     background-size: calc(100%);
-    height: 80vh;
+    height: 22vw;
     max-height: 500px;
-    width: 37vw;
+    width: 50vw;
+    margin: 30px 0;
+    margin-top: 70px;
     overflow: hidden;
+    border-radius: 10px;
+    /* border: 1px solid white; */
+    
+    /* box-shadow: px 1px white; */
 }
 .mainitems{
     padding: 0 7vw;
@@ -149,11 +159,12 @@ body::-webkit-scrollbar-thumb:hover {
 .specificitems{
     /* border: 1px solid yellow; */
     border-radius: 10px;
+    background-color: rgb(145,145,145,.1);
     width: 300px;
     transition: all .5s;
     overflow: hidden;
     margin: 15px;
-    box-shadow: 0px 0px 7px 7px rgb(25, 25, 25);
+    /* box-shadow: 0px 0px 10px 5px rgb(25, 25, 25); */
 }
 
 .specificitems img{
@@ -172,7 +183,6 @@ body::-webkit-scrollbar-thumb:hover {
     padding-right: 50px;
     align-items: center;
     transition: all 1s;
-    
 }
 .itemsearch input{
     width: 50vw;
@@ -184,9 +194,10 @@ body::-webkit-scrollbar-thumb:hover {
 }
 #itemsearch{
     transition:  all 1s;
+    padding: 10px;
 }
 #itemsearch:hover{
-    scale: 1.03;
+    /* scale: 1.03; */
     font-size: 1.2rem;
 }
 .itemsearch input:focus{
@@ -211,14 +222,34 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 #ordernow div,#changeprice div,#addtocart div,.ordernow div{
-    box-shadow: 0px 0px 7px 7px rgb(106, 106, 106);
+    /* box-shadow: 0px 0px 7px 7px rgb(106, 106, 106); */
+    border: 1px solid gold;
     width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-content: center;
+    /* background-color: rgba(145,145,145,.1); */
     padding: 15px;
     border-radius: 10px;
+}
+.inputqtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: 'center';
+    margin: 10px;
+    margin-bottom: 20px;
+    scale: 1.5;
+}
+
+.inputqtn p{
+    margin: 0;
+    padding:0 5px;
+}
+.qtn:focus{
+    border: none;
+    outline: none;
 }
 #specificnas{
     /* border: 1px solid red; */
@@ -434,8 +465,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .userorder{
     /* border: 1px solid white; */
-    padding: 50px;
-    
+    padding: 0 10px;
+    padding-top: 10px;
 }
 .tableheading{
     display: flex;
@@ -465,13 +496,14 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .specificorders{
     display: flex;
-    gap: 10px;
+    /* gap: 10px; */
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid white;
 }
 #specificcustomer p{
     width: 22vw;
+    text-align: start;
 }
 .specificorders h3{
     text-align: center;
@@ -487,9 +519,14 @@ body::-webkit-scrollbar-thumb:hover {
 .tablebody{
     border: 2px solid white;
     border-top: 0;
+    height: 70vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
     /* border-bottom: 0; */
 }
-
+.deliverdtrue:hover{
+    background-color: green !important;
+}
 .ordermanage{
     width: 8vw;
     background-color: rgba(255,255,255,.2);
@@ -499,6 +536,22 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .ordermanage:hover{
     background-color: rgba(255,255,255,.1);
+}
+.ordermanage2{
+    width: 150px;
+    background-color: rgba(255,255,255,.2);
+    /* background-color: rgba(255,0,0,.2); */
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#focuson:focus{
+    border: 2px solid white;
+    /* background-color: red; */
+}
+.ordermanage2:hover{
+    background-color: red;
 }
 .cartorder{
     justify-content: center;
@@ -641,7 +694,278 @@ body::-webkit-scrollbar-thumb:hover {
     left: 0;
     z-index: 2;
 }
+#customepizza{
+    position: fixed;
+    right: 10px;
+    bottom: 40px;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    justify-content:'center';
+    align-items: 'center';
+    cursor: pointer;
+}
+#customepizza:hover #cpb{
+    display: flex;
+    width: unset;
+}
+#customepizza:hover #cpbi{
+    transform: rotate(180deg);
+}
+#cpbi{
+    height: 100px;
+    width: 100px;
+    transition: all 1s;
+    z-index: 6;
+}
+/* #customepizza img:hover {
+} */
 
+#cpb{
+    display: none;
+    width: 0;
+    background-color: rgb(255, 225, 0);
+    height: 93px;
+    margin-top: 3px;
+    margin-left: -50px;
+    transition: all 1s;
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+    padding-left: 50px;
+    padding-right: 10px;
+    text-align: center;
+    justify-content: 'center';
+    align-items: 'center';
+    /* padding-top: 10px; */
+    padding-top: 0;
+}
+#cpb p{
+    color: black;
+    font-size: 1.5rem;
+    /* background-color: white; */
+    /* margin: 0; */
+    padding: 0px;
+    height:unset;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+.makecustome{
+    /* border: 1px solid yellow; */
+    /* padding: 20px; */
+    min-height: 80vh;
+    display: flex;
+}
 
+.makecustome h2{
+    margin: 0;
+}
+.mcleft{
+    /* border: 1px solid red; */
+    /* background-color: red; */
+    flex: 1;
+    
+    margin: 10px;
+    max-height: 100vh;
+    overflow-y: scroll;
+}
+.mcright{
+    /* border: 1px solid green; */
+    /* background-color: green; */
+    width: 300px;
+    background-color: rgba(128, 128, 128, 0.243);
+    /* padding: 10px; */
+    overflow-x: hidden;
+    max-height: 100vh;
+    overflow-y: scroll;
+}   
+.mcategory{
+    margin-bottom: 10px;
+    /* padding-left:50px; */
+    /* border: 1px solid blue; */
+}
+.mcpt{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: 'center';
+    padding: 0px 20px;
+    margin:5px 0;
+    cursor: pointer;
+    background-color: rgba(128, 128, 128, 0.343);
+}
+.mcpt:hover{
+    background-color: rgba(128, 128, 128, 0.243);
+}
+.mcpt p{
+    font-size: 1.5rem;
+    margin:10px 0;
+}
+.cphead{
+    text-align: center;
+    background-color: grey;
+    padding: 5px;
+    font-size: 1.5rem;
+    font-weight: '500';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.cphead2{
+    text-align: center;
+    background-color: grey;
+    /* padding: 5px; */
+    font-size: 1.5rem;
+    font-weight: '500';
+}
+.cheadp{
+    background-color: rgba(128, 128, 128, 0.343);
+    padding: 5px;
+    font-size: 1.2rem;
+}
+.cheadp:hover{
+    background-color: rgba(128, 128, 128, 0.280);
 
-/* 911 */
+}
+.cpordernow{
+    background-color: gold;
+    padding: 10px;
+    margin:10px 0;
+    text-align: center;
+    color: black;
+}
+.cpordernow:hover{
+    background-color: rgba(255, 217, 0, 0.628);
+}
+.cpadmin{
+    display: none;
+}
+.gocustome{
+    margin :0 50px;
+    text-align: end;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    align-items: center;
+}
+.gocustome p{
+    margin: 0;
+}
+.gocustome:hover .animatecustomeorder{ 
+    
+    margin-right: 0;
+    margin-left: 10px;
+}
+.gocustome:hover{
+    text-decoration: underline;
+}
+.animatecustomeorder{
+    margin-right: 10px;
+    transition: all .1s;
+}
+.animatecustomeorder:hover{
+    margin-right: 0;
+    margin-left: 10px;
+}
+.yesadmin{
+    display: unset;
+}
+.copo{
+    display: flex;
+    /* flex-direction: column; */
+    /* gap: 20px; */
+    border: 1px solid red;
+}
+.cotable{
+    flex: 1;    
+    margin-left: 3vw;
+    margin-right: 5vw;
+    width: 90vw;
+}
+.cotableheading tr{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* gap: 10px; */
+    position: sticky;
+    
+    top: 84px;
+    background-color: rgb(114, 114, 114);
+    padding: 5px;
+    border: 2px solid white;
+}
+.cotableheading tr th{
+    text-align: center;
+    font-size: 1.2rem;
+}
+.cospecificorders{
+    display: flex;
+    /* gap: 5px; */
+    padding: 10px;
+    /* margin-bottom: 5px; */
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid white;
+}
+.cospecificorders:hover{
+    background-color: rgba(128, 128, 128, 0.464);
+}
+.cospec{
+    min-height: 50vh;
+    margin: 5vw;
+    margin-top: 2vw;
+    
+}
+.codt{
+    border: 1px solid white;
+    display: flex;
+    margin: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.codt>span{
+    padding: 10px;
+    width: 20vw;
+    padding-left: 20px;
+    background-color: rgba(128, 128, 128, 0.756);
+}
+.codt>p{
+    background-color: rgba(128, 128, 128, 0.464);
+    padding: 10px;
+    margin: 0;
+    flex: 1;
+}
+.codb{
+    background-color: rgba(0, 128, 0, 0.823);
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+.codb:hover{
+    background-color: green;
+}
+.codbd{
+    background-color: rgba(255, 0, 0, 0.809);
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+.codbd:hover{
+    background-color: red;
+}
+.pcodb{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.itemdesc{
+    height: 50px;
+    overflow-y: scroll;
+}

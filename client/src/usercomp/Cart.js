@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../App';
 import Loading from '../generalcomp/Loading';
 function Cart(props) {
     const nav = useNavigate();
+    const {backend}=useContext(MyContext);
     const [cart, setCart] = useState([]);
     const [name, setName] = useState("");
     const [qtn, setQtn] = useState(1);
     const [desc, setDesc] = useState("");
     const [updateid, setUpdateid] = useState("");
     const [totalprice, setTotalprice] = useState(0);
+    const [isdata,setIsdata]=useState(true);
     const userid = props.ci;
     const getcart = async (d) => {
         d.preventDefault();
         setTotalprice(0);
         let price = 0;
-        const cartitems = await fetch(`http://localhost:7000/api/getcart/${userid}`, {
+        const cartitems = await fetch(`${backend}/api/getcart/${userid}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -23,9 +26,7 @@ function Cart(props) {
         const data = await cartitems.json();
         const cartdetail = await data.cartu;
         if (cartdetail.length == 0) {
-            setCart([{
-                ItemName: "-"
-            }])
+            setIsdata(false)
         } else {
 
             setCart(cartdetail);
@@ -37,7 +38,7 @@ function Cart(props) {
     }
     const updatecart = async (d) => {
         d.preventDefault();
-        const cartitems = await fetch(`http://localhost:7000/api/updatecart/${userid}/${updateid}/${qtn}`, {
+        const cartitems = await fetch(`${backend}/api/updatecart/${userid}/${updateid}/${qtn}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -57,7 +58,7 @@ function Cart(props) {
         if (!window.confirm("empty Cart!")) {
             return;
         }
-        const cartitems = await fetch(`http://localhost:7000/api/emptycart/${userid}`, {
+        const cartitems = await fetch(`${backend}/api/emptycart/${userid}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -72,7 +73,7 @@ function Cart(props) {
         document.getElementById('getcart').click();
     }
     const deletecart = async (id) => {
-        const cartitems = await fetch(`http://localhost:7000/api/deletecart/${userid}/${id}`, {
+        const cartitems = await fetch(`${backend}/api/deletecart/${userid}/${id}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -88,7 +89,7 @@ function Cart(props) {
         for (let i = 0; i < cart.length; i++) {
             let itemId = cart[i].id;
             let qnt = cart[i].qtn;
-            let orders = await fetch('http://localhost:7000/api/getorder', {
+            let orders = await fetch('${backend}/api/getorder', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -101,7 +102,7 @@ function Cart(props) {
             })
             let d = await orders.json();
         }
-        const cartitems = await fetch(`http://localhost:7000/api/emptycart/${userid}`, {
+        const cartitems = await fetch(`${backend}/api/emptycart/${userid}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -125,71 +126,71 @@ function Cart(props) {
     }, []);
     return (
         <>
-         <h1 style={{textAlign:"center",marginBottom:"0"}}>Your Cart</h1>
-         
-        <div id='allcarts' className='userorder'>
-            <div className='tableadjust'>
-            <div  className='cartorder'>
-                <h3>Totalprice: {totalprice} </h3>
-                <button className='btns' onClick={orderall} disabled={totalprice == 0 ? true : false}>orderall</button>
-                <button className='btns' onClick={emptycart} disabled={totalprice == 0 ? true : false}>emptycart</button>
-            </div>
-
-
-            <form id='updatecart' className='ordernow' onSubmit={updatecart}>
-                <div>
-                    <button style={{ width: "60px" }} className='btns' onClick={(d) => {
-                        d.preventDefault();
-                        document.getElementById('updatecart').style.display = "none"
-                    }}> X</button>
-                    <h1 style={{textAlign:"center"}}>{name}</h1>
-                    <p style={{textAlign:"center"}}>{desc}</p> <br />
-                    qtn: <input style={{ backgroundColor: "transparent", color: "white", marginBottom: "20px" }} type="number" placeholder='qtn' value={qtn} onChange={(d) => { setQtn(d.target.value) }} /> <br />
-                    <button className='btns' type="submit">update</button>
+            <h1 style={{textAlign:"center",marginBottom:"0"}}>Your Cart</h1>
+            <div id='allcarts' className='userorder'>
+                <div className='tableadjust'>
+                <div  className='cartorder'>
+                    <h3 style={{margin:"0"}}>Totalprice: {totalprice} </h3>
+                    <button className='btns' onClick={orderall} disabled={totalprice == 0 ? true : false}>orderall</button>
+                    <button className='btns' onClick={emptycart} disabled={totalprice == 0 ? true : false}>emptycart</button>
                 </div>
-            </form>
+
+
+                <form id='updatecart' className='ordernow' onSubmit={updatecart}>
+                    <div>
+                        <button style={{ width: "60px" }} className='btns' onClick={(d) => {
+                            d.preventDefault();
+                            document.getElementById('updatecart').style.display = "none"
+                        }}> X</button>
+                        <h1 style={{textAlign:"center"}}>{name}</h1>
+                        <p style={{textAlign:"center"}}>{desc}</p> <br />
+                        qtn: <input style={{ backgroundColor: "transparent", color: "white", marginBottom: "20px" }} type="number" placeholder='qtn' value={qtn} onChange={(d) => { setQtn(d.target.value) }} /> <br />
+                        <button className='btns' type="submit">update</button>
+                    </div>
+                </form>
+                    
                 
-            
 
-            <button style={{ display: "none" }} id='getcart' onClick={getcart}>cart</button>
+                <button style={{ display: "none" }} id='getcart' onClick={getcart}>cart</button>
 
-            <div className='tableheading cartitem'>
-                <p>ItemName</p>
-                <p>Price</p>
-                <p>Qtn</p>
-                <p>Total</p>
-                <p style={{width:'350px'}} >Description</p>
-                <p >update</p>
-                <p>Delete</p>
-            </div>
-            <div className='tablebody' id='tablemargin3'>
-                {cart.length > 0 ? (cart.map((e, id) => {
-                    return (
-                        <div key={id} id='specificcart' className='specificorders cartbody'>
-                            <h3> {e.name} </h3>
-                            <h3> {e.price} </h3>
-                            <h3> {e.qtn} </h3>
-                            <h3>{(e.qtn) * (e.price)}</h3>
-                            <h3 style={{width:"350px"}} > {e.desc} </h3>
-                            <button className='ordermanage' style={{width:"105px"}} onClick={(d) => {
-                                d.preventDefault();
-                                setName(e.name);
-                                setDesc(e.desc);
-                                setQtn(e.qtn);
-                                setUpdateid(e.id)
-                                document.getElementById('updatecart').style.display = "unset"
-                            }}>update</button>
-                            <button className='ordermanage' style={{width:"105px"}}  onClick={(d) => {
-                                d.preventDefault();
-                                deletecart(e.id);
-                            }}>delete</button>
-                        </div>
-                    )
-                })) : (<Loading />)}
-            </div>
+                <div className='tableheading cartitem'>
+                    <p>ItemName</p>
+                    <p>Price</p>
+                    <p>Qtn</p>
+                    <p>Total</p>
+                    <p style={{width:'350px'}} >Description</p>
+                    <p >update</p>
+                    <p>Delete</p>
+                </div>
+                <div className='tablebody' id='tablemargin3'>
+                    {isdata ? <>
+                        { cart.length > 0 ? (cart.map((e, id) => {
+                        return (
+                            <div key={id} id='specificcart' className='specificorders cartbody'>
+                                <h3> {e.name} </h3>
+                                <h3> {e.price} </h3>
+                                <h3> {e.qtn} </h3>
+                                <h3>{(e.qtn) * (e.price)}</h3>
+                                <h3 style={{width:"350px"}} > {e.desc} </h3>
+                                <button className='ordermanage' style={{width:"105px"}} onClick={(d) => {
+                                    d.preventDefault();
+                                    setName(e.name);
+                                    setDesc(e.desc);
+                                    setQtn(e.qtn);
+                                    setUpdateid(e.id)
+                                    document.getElementById('updatecart').style.display = "unset"
+                                }}>update</button>
+                                <button className='ordermanage' style={{width:"105px"}}  onClick={(d) => {
+                                    d.preventDefault();
+                                    deletecart(e.id);
+                                }}>delete</button>
+                            </div>
+                        )
+                        })) : (<Loading />)} </> : <div style={{textAlign:'center',padding:'5px'}}>no data found</div>}
+                </div>
 
+                </div>
             </div>
-        </div>
         </>
     )
 }

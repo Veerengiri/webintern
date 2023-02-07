@@ -5,7 +5,7 @@ const app = express();
 const cors = require("cors");
 const addmin = require("./router/admin");
 const customer = require("./router/costemer");
-const uploadImage = require('./router/uploadimage');
+
 
 require("./db");
 
@@ -23,7 +23,7 @@ app.get('/',(req,res)=>{
 app.use(addmin);
 app.use(auth);
 app.use(customer);
-app.use(uploadImage);
+
  
 app.listen(port,()=>{
     console.log("listening on port: "+port);

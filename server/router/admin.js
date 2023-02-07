@@ -2,83 +2,65 @@ const express = require('express');
 const malik = require('../model/malik');
 const item = require('../model/item');
 const nas = require('../model/nas');
+const custome= require('../model/custome');
+const user = require('../model/user');
 const router = express.Router();
+require('dotenv').config();
 const bycrpt = require("bcryptjs");
-const multer = require('multer');
-const path =require('path');
-const fs = require('fs');
+const aws = require('aws-sdk');
+const jwt = require('jsonwebtoken');
 
 
-// const registerdata = require('../../../final cardGenerator/src/server/models/register');
-
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,"itemImages");
-    },
-    filename: function(req,file,cb){
-        cb(null,Date.now()+path.extname(file.originalname));
-    }
+const region = process.env.REGION;
+const secretkey = process.env.SECRET_ACCESS_KEY;
+const accesskey = process.env.ACCESS_KEY;
+const bucketName = process.env.BUCKET; 
+const s3 = new aws.S3({
+    region,
+    accessKeyId:accesskey,
+    secretAccessKey:secretkey,
+    signatureVersion:'v4',
 });
-const upload = new multer({
-    storage:storage
-})
-router.post('/api/additems',upload.array("itemImage"),async(req,res)=>{
-    try {
-        const filename = req.files;
-        const {name,price,desc }=req.body;
-
-        const newitem = new item({
-            name:name,
-            desc:desc,
-            itemImage: filename[0].filename,
-            price:price,
-        })
-        const data = await newitem.save();
-        if(data){
-            res.status(200).json({status:"ok",name:name})
-            
-        }
-        else{
-            res.status(200).json({status:"error"});
-            
-        }
-    } catch (err) {
-        res.status(500).json({status:"server error"});
-        
-    }
-});
-
-
-
-// router.post('/api/updateitem/:itemid',upload.array("itemImage"),async (req,res)=>{
-//     try {
-//         const filename = req.files;
-//         const {name,price,desc }=req.body;
-//         const {itemid}=req.params;
-//         const dt = item.findById(itemid);
-//         const data=await item.findByIdAndUpdate(itemid,{
-//             name:name,
-//             desc:desc,
-//             itemImage: filename[0].filename,
-//             price:price,
-        
-//         });
-//         if(data){
-//             let paths = `./itemImages/${dt.itemImage}`
-//             fs.unlinkSync(paths);
-//             res.json({status:"ok"});
-//         }
-//     } catch (error) {
-//         res.json({status:"error"});
-//     }
+async function generateUploadUrl(filetype){
+    const imageName =((Date.now().toString())+'.'+filetype).toString();
+    const params = ({
+        Bucket: bucketName,
+        Key: imageName,
+        Expires: 60
+    })
+    const uploadURL = await s3.getSignedUrlPromise('putObject',params);
     
-// },(err,result)=>{
-//     if(err){
-//         console.log(error);
-//     }else{
-//         console.log("updated sucssfully");
-//     }
-// })
+    return uploadURL;
+}
+router.get('/api/geturl/:filetype',async (req,res)=>{
+    try {
+        const {filetype}=req.params;
+        const url =await generateUploadUrl(filetype);
+        res.json({status:'ok',url});
+    } catch (error) {
+        res.json({error});
+    }
+})
+router.post('/api/additems',async (req,res)=>{
+    try {
+        const {name,price,desc,itemImage}=req.body;
+        const ite = await item.create({
+            name,
+            price,
+            desc,
+            itemImage,
+        })
+        if(ite){
+            res.json({status:"ok"})
+        }else{
+            res.json({status:"item not added.."})
+        }
+    } catch (error) {
+        res.json({status:"error"});
+    }
+})
+
+
 router.get('/api/updateitemprice/:itemid/:price',async (req,res)=>{
     try {
         const {itemid,price}=req.params;
@@ -114,8 +96,22 @@ router.get('/api/deleteitem/:itemid',async (req,res)=>{
     try {
         const data =await item.findByIdAndDelete(itemid);
         if(data){
-            let paths = `./itemImages/${data.itemImage}`
-            fs.unlinkSync(paths);
+            // let paths = `./itemImages/${data.itemImage}`
+            // fs.unlinkSync(paths);
+            const url = data.itemImage;
+            const urlsplit= url.split('/');
+            const filename = urlsplit[urlsplit.length-1];
+            let resdata = true;
+        // const filename = "javaproject.text";
+            const params= ({
+                Bucket: bucketName,
+                Key: filename
+            })
+            const delet = await s3.deleteObject(params, (err, data) => {
+                if (err) {
+                    resdata = false;
+                }
+            })
             res.status(200).json({status:"ok"})
         }
     } catch (error) {
@@ -220,8 +216,10 @@ router.post('/api/loginmalik',async (req,res)=>{
         const {email,password}=req.body;
         const admin  = await malik.findOne({email: email});
         const compare = await bycrpt.compare(password, admin.password);
+
         if(compare){
-            res.json({status:'ok',admin});
+            var token = jwt.sign({email:email,id:admin._id,isadmin:true}, 'theInfinity'); 
+            res.json({status:'ok',admin,token});
         }else{
             res.json({status:"not found"})
         }
@@ -253,4 +251,75 @@ router.post('/api/updateadmin',async (req,res)=>{
         res.json({status:"admin not updated"});
     }
 })
+
+router.get('/api/getco',async (req,res)=>{
+    try {
+        const orders = await custome.find().sort({sorttime:-1}).select("_id qtn totalprice date time isDeliverd cancel");
+        res.json({status:"ok",orders})
+    } catch (error) {
+        res.json({status:"error"});
+    }
+})
+router.get('/api/getpco/:oid',async (req,res)=>{
+    try{
+        const {oid}=req.params;
+        const order = await custome.findById(oid);
+        const ud = await user.findById(order.userId).select("-cart -password");
+        let obj = {
+            name: ud.name,
+            type: order.type,
+            sauce: order.sauce,
+            cheese: order.cheese,
+            veg: order.veg,
+            qtn: order.qtn,
+            price: order.price,
+            totalprice: order.totalprice,
+            date: order.date,
+            time: order.time,
+            status: (order.cancel ? "Canceled": (order.isDeliverd ? "Deliverd" : "Undeliverd") ),
+            email :ud.email,
+            mobile: ud.mobileNo,
+            address: ud.address,
+        }
+        res.json({status:'ok',data:obj});
+    }catch(error){
+        res.json({status:'error'});
+    }
+})
+router.get('/api/codt/:oid',async (req,res)=>{
+    try{
+        const dt = await custome.findByIdAndUpdate(req.params.oid,{isDeliverd:true});
+        if(dt){
+            res.json({status:"ok"});
+        }else{
+            res.json({status:'server error'});
+        }
+    }catch(error){
+        res.json({status:"error"});
+    }
+})
+router.get('/api/getcou/:uid',async (req,res)=>{
+    try{
+        const orders= await custome.find({userId:req.params.uid}).sort({sorttime:-1}).select("_id qtn totalprice date time isDeliverd cancel");
+        res.json({status:"ok",orders})
+    }catch(err){
+        res.json({status:"error"})
+    }
+})
+router.get('/api/codc/:oid',async (req,res)=>{
+    try{
+        const dt = await custome.findByIdAndUpdate(req.params.oid,{cancel:true});
+        if(dt){
+            res.json({status:"ok"});
+        }else{
+            res.json({status:'server error'});
+        }
+    }catch(err){
+        res.json({status:'error'})
+    }
+})
+
+
+
+
 module.exports=router

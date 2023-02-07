@@ -5,9 +5,10 @@ const user = require('../model/user');
 const bycrpt = require('bcryptjs');
 const item = require('../model/item');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 router.post('/api/registeruser', async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const { name, email, mobileNo, password, address } = req.body;
         const salt = await bycrpt.genSalt(10);
@@ -161,9 +162,9 @@ router.post('/api/login', async (req, res) => {
     try {
         const data = await user.findOne({email: req.body.email});
         const compare = await bycrpt.compare(req.body.password, data.password);
-        
         if (data && compare) {
-            res.json({ status: "ok,user is login successfully" ,id:data._id});
+            var token = jwt.sign({email:req.body.email,id:data._id,isadmin:false}, 'theInfinity'); 
+            res.json({ status: "ok,user is login successfully" ,id:data._id,token});
         }
         else {
             res.json({ status: "error in password or email" });
@@ -171,6 +172,16 @@ router.post('/api/login', async (req, res) => {
     } catch (error) {
         res.json({status:"error in email or password"});
     }
+})
+router.get('/api/check/:token',async (req,res)=>{
+   try {
+    const {token}=req.params;
+    const decode = jwt.verify(token,"theInfinity");
+    // console.log(decode);
+    res.json({status:"ok",email:decode.email,id:decode.id,isadmin:decode.isadmin});
+   } catch (error) {
+    res.json({status:'error'})
+   }
 })
 router.get("/api/getalluser", async (req, res) => {
     try {

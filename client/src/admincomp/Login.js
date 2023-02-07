@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from "react-router-dom"
+import { MyContext } from '../App';
 // import Loading from '../generalcomp/Loading';
 
 const chakar = Math.round(1000000 * Math.random()).toString();
 function Login(props) {
   const { sai, isadmin, mae, ismainadmin } = props
+  const {backend}=useContext(MyContext);
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cp, setCp] = useState("");
   const [code, setCode] = useState("");
+  const [submit,setSubmit]=useState("Login");
   const login = async (e) => {
+    setSubmit("Just a Sec...");
     e.preventDefault();
-    const response = await fetch('http://localhost:7000/api/loginmalik', {
+    const response = await fetch(`${backend}/api/loginmalik`, {
       method: "POST",
       headers: {
         "content-type": "application/json"
@@ -24,8 +28,9 @@ function Login(props) {
     })
     const data = await response.json();
     if (data.status == "ok") {
-      window.localStorage.setItem('emailforadmin',email);
-      window.localStorage.setItem('adminid',data.admin._id);
+      // window.localStorage.setItem('emailforadmin',email);
+      // window.localStorage.setItem('adminid',data.admin._id);
+      window.localStorage.setItem('token',data.token);
       isadmin(true);
       sai(data.admin._id);
       if (mae == data.admin.email) {
@@ -36,6 +41,7 @@ function Login(props) {
       alert(data.status);
 
     }
+    setSubmit("Login")
   }
   const forgetpassword = async (e) => {
     e.preventDefault();
@@ -81,7 +87,7 @@ function Login(props) {
       return;
     }
 
-    const response = await fetch(`http://localhost:7000/api/addmincp/${email}/${password}`, {
+    const response = await fetch(`${backend}/api/addmincp/${email}/${password}`, {
       method: "GET",
       headers: {
         "content-type": "application/json"
@@ -130,7 +136,7 @@ function Login(props) {
                 <p><Link to={"/login"}>login as customer</Link></p>
                 <p onClick={forgetpassword} style={{ cursor: "pointer" }}>Forger password</p>
               </span>
-              <button className='btns' style={{ marginBottom: "-20px", marginTop: "10px" }} type="submit">Login</button>
+              <button className='btns' style={{ marginBottom: "-20px", marginTop: "10px" }} type="submit">{submit}</button>
             </div>
 
           </form>

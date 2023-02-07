@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
+import { MyContext } from '../App';
 
 const chakar = Math.round(1000000 * Math.random()).toString();
 function Login(props) {
     const { setCustomerid, setIscustomer, setCustomeremail } = props;
+    const {backend}=useContext(MyContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [cp, setCp] = useState("");
     const [code, setCode] = useState("");
+    const [submit,setSubmit]=useState("Submit");
     const nav = useNavigate();
     const login = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:7000/api/login', {
+        setSubmit("Just a Sec...");
+        const response = await fetch(`${backend}/api/login`, {
             method: "POST",
             headers: {
                 "content-type": "application/json"
@@ -22,11 +26,12 @@ function Login(props) {
             })
         })
         const data = await response.json();
-
         
         if (data.status == "ok,user is login successfully") {
-            window.localStorage.setItem('emailforuser',email);
-            window.localStorage.setItem('customerid',data.id);
+            // window.localStorage.setItem('emailforuser',email);
+            // window.localStorage.setItem('customerid',data.id);
+            // console.log(data.token)
+            window.localStorage.setItem('token',data.token);
             setCustomerid(data.id);
             setCustomeremail(email);
             setIscustomer(true);
@@ -34,7 +39,9 @@ function Login(props) {
         }else{
             alert(data.status);
         }
+        setSubmit("Submit");
     }
+    
     const forgetpassword = async (e) => {
         e.preventDefault();
         document.getElementById('login').style.display = "none";
@@ -79,7 +86,7 @@ function Login(props) {
             return;
         }
 
-        const response = await fetch(`http://localhost:7000/api/changepassword/${email}/${password}`, {
+        const response = await fetch(`${backend}/api/changepassword/${email}/${password}`, {
             method: "GET",
             headers: {
                 "content-type": "application/json"
@@ -109,10 +116,10 @@ function Login(props) {
         // setPassword("");
         setEmail("");
         setCode("");
+
     }, [])
     return (
         <div className='mainlogin'>
-
             <div className='loginform'>
                 <div className='lleft'></div>
                 <div>
@@ -125,7 +132,7 @@ function Login(props) {
                                 <p><Link to={"/alogin"}>login as admin</Link></p>
                                 <p onClick={forgetpassword} style={{ cursor: "pointer" }}>Forger password</p>
                             </span>
-                            <button className='btns' type="submit">Login</button>
+                            <button className='btns' type="submit">{submit}</button>
                         </div>
 
                     </form>

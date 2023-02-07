@@ -17,10 +17,9 @@ function Navbar(props) {
   const navclose=()=>{
     
     document.getElementById('navbartoggle').style.animationName="closenav"
-    setTimeout(() => {
-      
-      document.getElementById('navbartoggle').style.display="none"
-    }, 1000);
+    document.getElementById('navbartoggle').style.display="none"
+    // setTimeout(() => {
+    // }, 1000);
     document.getElementById('navclose').style.display="none"
   }
   useEffect(() => {
@@ -48,7 +47,6 @@ function Navbar(props) {
   return (
     <div className='navbarmain'>
       <div className='logo'>
-
         <i style={{ marginBottom: "-12px", fontSize: "1.1rem", marginLeft: "15px" }}>the</i>
         <p><i style={{ fontWeight: 'bold' }}>Inf</i><i style={{ fontWeight: "bold" }}>inity</i></p>
       </div>
@@ -136,8 +134,8 @@ function Navbar(props) {
         </div>
 
       </div>
-        <div className='displaynone'><img onClick={togglenav} className='navimg' src="https://cdn-icons-png.flaticon.com/128/545/545806.png" alt="" /></div>
-        <button onClick={navclose} id='navclose'  className='btns displaynone'>X</button>
+      <div className='displaynone'><img onClick={togglenav} className='navimg' src="https://cdn-icons-png.flaticon.com/128/545/545806.png" alt="" /></div>
+      <button onClick={navclose} id='navclose'  className='btns displaynone'>X</button>
     </div>
   )
 }

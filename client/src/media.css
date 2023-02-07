@@ -1,5 +1,12 @@
 @media only screen and (max-width:985px) {
-
+    .ordercatagory{
+        /* flex-direction: column; */
+        position: absolute;
+        left: 0px;
+        top: 10px;
+        /* border: 2px solid red; */
+        align-items: start;
+    }
     .navbarmain {
         padding: 10px;
 
@@ -13,8 +20,8 @@
         overflow-x: scroll;
         /* border: 1px solid white; */
 
-        margin-left: 10px;
-        margin-right: 30px;
+        /* margin-left: 10px; */
+        margin-right: 10px;
     }
 
     .tableheading p {
@@ -55,6 +62,7 @@
     }
 
     .tableadjust {
+       
         width: 1150px;
     }
 
@@ -74,7 +82,7 @@
     }
 
     .hright {
-        height: 60vh;
+        /* height: 60vh; */
     }
     .registerform input{
         width: 30vw;
@@ -119,7 +127,7 @@
     }
 
     .hright {
-        height: 50vh;
+        /* height: 50vh; */
     }
 
     #ordernow,#changeprice,#addtocart,.ordernow{
@@ -143,7 +151,7 @@
         right: 25vw;
         top: 20px;
         z-index: 3;
-        animation-duration: 1s;
+        animation-duration: .5s;
         animation-timing-function: ease-in-out;
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
@@ -155,7 +163,7 @@
         top: 0;
         right: 0;
         /* overflow-x: hidden; */
-        animation-duration: 1s;
+        animation-duration: .5s;
         animation-timing-function: ease-in-out;
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
@@ -172,13 +180,9 @@
     @keyframes closenav{
         from{
             right: 0;
-            
-            
         }
         to{
             right: -40vw;  
-            
-            
         }
     }
     @keyframes navopen {
@@ -198,7 +202,7 @@
         right: 0;
         top: 0;
         /* display: none; */
-        transition: all 1s;
+        /* transition: all 1s; */
         height: 100vh;
         width: 30vw;
         background-color: rgba(0, 0, 0, 0.774);
@@ -237,19 +241,26 @@
         gap: 10px;
     }
 
-    .hright {
-        height: 50vh;
+    .hleft{
+        margin-top: 60px;
     }
     .manageadminorder{
         flex-direction: column;
-        padding: 20px;
+        /* padding: 20px;
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
+        margin: 0;
+        margin-top: 50px;
+        gap: 10;
     }
     .manageadminorder>div{
         flex-direction: column;
+        margin: 0;
+        flex: 1;
     }
-
+    #sortbybtn{
+        width: 150px;
+    }
 
 }
 
@@ -268,27 +279,32 @@
     }
 
     .hleft {
-        padding-top: 150px;
-        padding-bottom: 100px;
+        padding-top:100px;
+        padding-bottom: 50px;
         width: 80vw;
         /* height: 50vh; */
         justify-content: center;
         align-items: center;
+        margin-top: 0;
     }
     .hleft::before{
-        background: url(https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YnVyZ2VyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60);
+        background: url(https://img.freepik.com/free-vector/realistic-pizza-ads-banner_52683-70644.jpg?w=1060&t=st=1675677779~exp=1675678379~hmac=867443f1c262cd8f8c467dbffe0935cb45ce8b8f6546cf5dda396070bfb71ea8);
         background-repeat: no-repeat;
-        background-position:0px 40px;
+        /* background-position:0px 0px; */
+        background-size: cover;
+        background-position: center;
 
-        background-size: calc(95%);
+        margin-top: 40px;
+        background-size: calc(100%);
         position: absolute;
-        top: 0;
+        top: 50px;
         left: 0;
         content: "";
         z-index: -1;
-        opacity: 0.5;
-        height: 50vh;
+        opacity: 0.4;
+        height: 40vw;
         width: 100vw;
+        /* border: 1px solid red; */
     }
 
     .navbar>div {
@@ -331,6 +347,17 @@
     #ordernow,#changeprice,#addtocart,.ordernow{
         padding: 10vh 30vw;
     }
+    .mcright{
+        width: auto;
+        padding:0 20px;
+        padding-bottom: 20px;
+    }
+    .makecustome{
+        flex-direction: column;
+    }
+    .mcleft{
+        max-height: 80vh;
+    }
 }
 @media only screen and (max-width:520px){
     #ordernow,#changeprice,#addtocart,.ordernow{
@@ -347,5 +374,50 @@
     }
     .ordercatagory button{
         width: 150px;
+    }
+    .hleft::before{
+        
+        background-repeat: no-repeat;
+        /* background-position:0px 0px; */
+        background-size: cover;
+        background-position: center;
+
+        /* margin-top: 40px; */
+        /* background-size: c; */
+        position: absolute;
+        top: 0px;
+        left: 0;
+        content: "";
+        z-index: -1;
+        opacity: 0.4;
+        height: 60vw;
+        width: 100vw;
+        overflow: hidden;
+        /* border: 1px solid red; */
+    }
+
+    .hleft{
+        overflow: hidden;
+    }
+}
+@media only screen and (max-width: 440px){
+    .hleft::before{
+        
+        background-repeat: no-repeat;
+        /* background-position:0px 0px; */
+        background-size: cover;
+        background-position: end;
+
+        margin-top: 60px;
+    }
+}
+@media only screen and (max-width: 400px){
+    .hleft::before{
+        margin-top: 80px;
+        height: 70vw;
+    }
+    .gocustome{
+        margin: 0;
+        margin-right: -10px;
     }
 }

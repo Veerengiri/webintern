@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../App';
 import Loading from '../generalcomp/Loading'
 // this conponent only show to main admin
 function Admins(props) {
   const { isadmin } = props;
+  const {backend}=useContext(MyContext);
   const nav = useNavigate();
   // this is not changed
   const email = "virengirigoswami3@gmail.com"; // this is not changed
   const [admins, setAdmins] = useState([]);
   const showadmins = async (e) => {
-    const admin = await fetch('http://localhost:7000/api/getallmalik', {
+    const admin = await fetch(`${backend}/api/getallmalik`, {
       method: "GET",
       headers: {
         "content-type": "application/json"
@@ -19,7 +21,7 @@ function Admins(props) {
     setAdmins(data.admin);
   }
   const removeadmin = async (id) => {
-    const admin = await fetch(`http://localhost:7000/api/removemalik/${id}`, {
+    const admin = await fetch(`${backend}/api/removemalik/${id}`, {
       method: "GET",
       headers: {
         "content-type": "application/json"
@@ -55,7 +57,7 @@ function Admins(props) {
                 <p style={{width:'300px'}}>{e.name}</p>
                 <p style={{width:'150px'}}>{e.mobileNo}</p>
                 <p style={{width:'300px'}}>{e.email}</p>
-                <button  style={{ width: "200px" }} className='ordermanage' disabled={e.email == email} onClick={(d) => {
+                <button  style={{ width: "200px" }} className='ordermanage2' disabled={e.email == email} onClick={(d) => {
                   d.preventDefault();
                   removeadmin(e._id);
                 }}>remove admin</button>

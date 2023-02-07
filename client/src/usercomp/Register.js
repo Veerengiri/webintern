@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../App';
 
 let chakar = Math.round(1000000 * Math.random()).toString();
 // let chakar = "1111";
@@ -12,6 +13,7 @@ function Register() {
     const [address, setAddress] = useState("");
     const [ec, setEc] = useState("");
     const nav = useNavigate();
+    const {backend}=useContext(MyContext);
     const submit = async (e) => {
         e.preventDefault();
         alert("code is send to your email")
@@ -46,7 +48,7 @@ function Register() {
             return;
         }
         try {
-            const response = await fetch('http://localhost:7000/api/registeruser', {
+            const response = await fetch(`${backend}/api/registeruser`, {
                 method: "POST",
                 headers: {
                     "content-type": "application/json"
