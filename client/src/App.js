@@ -25,12 +25,12 @@ import Corder from "./admincomp/Corder";
 import Coinfo from "./admincomp/Coinfo";
 import UCorder from "./usercomp/Corder";
 import UCoinfo from "./usercomp/Coinfo";
-// import "dotenv";
+
 
 
 const MyContext = createContext();
 function App() {
-  const backend = "https://pizzasite-beige.vercel.app";
+  const backend = process.env.REACT_APP_BACKEND;
   const [customerid,setCustomerid]=useState("");
   const [customeremail,setCustomeremail]=useState("");
   const [adminid,setAdminid]=useState("");

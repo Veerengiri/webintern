@@ -18,6 +18,9 @@ frontendflow
 .env
 .env.local
 .env.development.local
+.1.jpg
+.2.jpg
+.3.jpg
 .env.test.local
 .env.production.local
 

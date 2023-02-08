@@ -6,10 +6,6 @@ import { MyContext } from '../App';
 function AddItem(props) {
   const {isadmin}=props;
   const {backend}=useContext(MyContext);
-  // const [email,setEmail]=useState("");
-  // const [mobileNo,setMobileNo]=useState("");
-  // const [password,setPassword]=useState("");
-  // const [address,setAddress]=useState("");
   const [name, setName] = useState("");
   const [pi, setPi] = useState(null);
   const [pname,setPname]=useState("");
@@ -36,11 +32,12 @@ function AddItem(props) {
     })
     const imgurl = url.split('?')[0];
     console.log("uploaded "+imgurl);
-    // setImagesourse(imgurl)
+    
     return imgurl;
   }
   const submit = async (e) => {
     e.preventDefault();
+    if(addItem=="Adding..."){return}
     setAddItem("Adding...");
     console.log("submiting");
     if(price<0){

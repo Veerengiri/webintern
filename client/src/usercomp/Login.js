@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState,useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { MyContext } from '../App';
+import emailjs from '@emailjs/browser';
 
 const chakar = Math.round(1000000 * Math.random()).toString();
 function Login(props) {
@@ -11,9 +12,23 @@ function Login(props) {
     const [cp, setCp] = useState("");
     const [code, setCode] = useState("");
     const [submit,setSubmit]=useState("Submit");
+    const [sendotp,setSendotp]=useState("Send OTP");
     const nav = useNavigate();
+    const form = useRef();
+
+    const sendEmail = (e) => {
+        e.preventDefault();
+        emailjs.sendForm('service_z80kdsc', 'template_pkan5j9', form.current, process.env.REACT_APP_EMAIL_KEY)
+        .then((result) => {
+            console.log(result.text);
+        }, (error) => {
+            console.log(error.text);
+        });
+    };
+
     const login = async (e) => {
         e.preventDefault();
+        if(submit=="Just a Sec..."){return}
         setSubmit("Just a Sec...");
         const response = await fetch(`${backend}/api/login`, {
             method: "POST",
@@ -41,7 +56,6 @@ function Login(props) {
         }
         setSubmit("Submit");
     }
-    
     const forgetpassword = async (e) => {
         e.preventDefault();
         document.getElementById('login').style.display = "none";
@@ -55,19 +69,18 @@ function Login(props) {
             alert("please enter valid email");
             return;
         }
-        await window.Email.send({
-            Host: "smtp.elasticemail.com",
-            Username: "virengirigoswami3@gmail.com",
-            Password: "28FB4AE2E314E380D52BBE1F1266C80D6AB3",
-            To: email,
-            From: "virengirigoswami3@gmail.com",
-            Subject: "verify email",
-            Body: "your verification code : " + chakar
-        }).then(
-            () => { alert("code is send to your email") }
-        );
+        if(sendotp=="Sending..."){return}
+        setSendotp("Sending...");
+        await emailjs.sendForm('service_z80kdsc', 'template_pkan5j9', form.current, process.env.REACT_APP_EMAIL_KEY)
+        .then((result) => {
+            alert("code is send to your email...")
+        }, (error) => {
+            // console.log(error.text);
+        });
+        
         document.getElementById('forget').style.display = "none";
         document.getElementById('fcode').style.display = "unset";
+        setSendotp("Send OTP")
     }
     const verifycode = async (e) => {
         e.preventDefault();
@@ -120,6 +133,15 @@ function Login(props) {
     }, [])
     return (
         <div className='mainlogin'>
+            <form style={{display:"none"}} ref={form} onSubmit={sendEmail}>
+                <label>Name</label>
+                <input type="text" value={email} onChange={()=>{}} name="user_name" /><br />
+                <label>Email</label>
+                <input type="email" value={email} onChange={()=>{}} name="user_email" /><br />
+                <label>Message</label>
+                <textarea value={chakar} onChange={()=>{}} name="message" /><br />
+                <input type="submit" value="Send" />
+            </form>
             <div className='loginform'>
                 <div className='lleft'></div>
                 <div>
@@ -141,7 +163,7 @@ function Login(props) {
                         <div>
                             <input type="email" value={email} placeholder="Enter Your Email" onChange={(e) => { setEmail(e.target.value) }} /> <br />
                             <span>
-                                <button className='btns' type='submit'>Send OTP</button>
+                                <button className='btns'  type='submit'>{sendotp}</button>
                                 <button className='btns' onClick={(d) => {
                                     d.preventDefault();
                                     close();
